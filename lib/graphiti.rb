@@ -13,18 +13,19 @@ require "dry-types"
 require "graphiti_errors"
 
 require "jsonapi/serializable"
+require 'ostruct'
 
 module Graphiti
   DEPRECATOR = ActiveSupport::Deprecation.new("2.0", "Graphiti")
 
   # @api private
   def self.context
-    Thread.current[:context] ||= {}
+    Thread.current.thread_variable_get(:context) || {}.tap(&method(:context=))
   end
 
   # @api private
   def self.context=(val)
-    Thread.current[:context] = val
+    Thread.current.thread_variable_set(:context, val)
   end
 
   # @api private
